@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+	<!-- DEVELOPED for høly by Menelaos Tondis / awsm.codes -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="description" content="Holy Moly Weather Guacamole  ><((('> ">
+	<meta name="keywords" content="holy, moly, forecast, macaroni, weather, app">
+	<meta name="rights" content="Menelaos Tondis + høly" />
+	<title>umbrellapp</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="awsm.css">
+
+	<!-- ICONS -->
+	<link rel="shortcut icon" href="images/favicon.png">
+
+
+</head>
+
+<body data-ng-app="">
+
+	<div class='navicon'>
+		<span class='nav-slice'></span>
+		<span class='nav-slice'></span>
+		<span class='nav-slice'></span>
+	</div>
+
+
+	<div class='logo'>
+		<a href='http://www.awsm.codes/umbrellapp'><img src="images/logo.svg" alt='umbrellapp logo'/></a>
+	</div>
+
+	<div class='love'>
+		<div class='add'>Add to Favorites</div>
+		<a href='http://www.awsm.codes/umbrellapp'><img src="images/love.svg" alt='umbrellapp logo'/></a>
+	</div>
+
+
+
+	<div class='weather'>
+
+		<h2>TODAY</h2>
+
+		<div id="today"></div>
+
+		<div id="forecast1" class='fc'></div>
+		<div id="forecast2" class='fc'></div>
+		<div id="forecast3" class='fc'></div>
+		<div id="forecast4" class='fc'></div>
+		<div id="forecast5" class='fc'></div>
+
+		<div class='clear'></div>
+
+	</div>
+
+
+	<nav class='off'>
+		<div class='close'>
+			<span class='close-slice-a'></span>
+			<span class='close-slice-b'></span>
+		</div><!--close-->
+		<div class='headline'>Your best weather app</div>
+		<div class='line'></div>
+		<div class='menu'>
+			<ul>
+				<li><a href='#'>team</a></li>
+				<li><a href='#'>history</a></li>
+				<li><a href='#'>contact</a></li>
+			</ul>
+		</div><!--menu-->
+		<div class='social'>
+			<p>suggest to a friend</p>
+			<ul>
+				<li><a href='#'><img src="images/facebook.svg" alt='facebook logo'/></a></li>
+				<li><a href='#'><img src="images/twitter.svg" alt='twitter logo'/></a></li>
+				<li><a href='#'><img src="images/google.svg" alt='google+ logo'/></a></li>
+			</ul>
+		</div><!--social-->
+	</nav>
+
+
+	<div class='loader'>
+		<div class='logo'>
+			<img src="images/logo.svg" alt='umbrellapp logo'/>
+			<img src="images/umbrellapp.svg" class='textlogo' alt='umbrellapp logo text'/>
+		</div>
+	</div>
+
+
+	<div class='location'>
+		<div class='method'>
+			<p>type a location:</p>
+			<form id='defined'>
+				<label for='name'>defined</label>
+				<input type="text" data-ng-model="name" placeholder="type here.." name="name" id="name">
+				<button id='go'></button>
+			</form>
+			<p>or give us your location</p>
+			<form id='geolocal'>
+				<label for="geoname">geolocal</label>
+				<input type="text" data-ng-model="geoname" placeholder="type here.." name="geoname" id="geoname">
+				<button id='geo'>access location</button>
+			</form>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="jquery-ui.min.js"></script>
+
+
+	<script>
+
+
+		$('.navicon, .close').click(function() {
+			$('nav').toggleClass('off');
+		});
+
+		$('button').click(function() {
+			$('.location').addClass('animate');
+		});
+
+
+		$(window).load(function(){
+			$('.loader').addClass('roll');
+			$('.logo img:nth-child(1)').addClass('wind');
+
+		});
+
+
+// --- FIND LOCATION
+
+
+$.get("http://ipinfo.io/geo", function (response) {
+	$("#geoname").val(response.city);
+	var cityName = $('#geoname').val();
+
+
+
+	var todayUrl = 'http://api.openweathermap.org/data/2.5/weather?q='+cityName+'&units=metric&appid=1e65321b7d769c18cc3b525d0b357ed3' ;
+	var forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast/daily?q='+cityName+'&units=metric&appid=1e65321b7d769c18cc3b525d0b357ed3';  
+
+	$.get( todayUrl, function (today) {
+
+
+		text = today.name +", "+ today.sys.country + '<br/>';
+		text += '<img src="w-svg/' + today.weather[0].icon + '.svg"/><br/>';
+		text += '<div class="max">' + today.main.temp_max + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + today.main.temp_min + ' <sup>o</sup>C</div>';
+		$('#today').append(text);
+
+	});
+
+
+
+	$.get( forecastUrl, function (fc) {
+
+
+		text = '<div class="day">' + day1 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[0].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[0].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[0].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast1').append(text);
+
+		text = '<div class="day">' + day2 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[1].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[1].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[1].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast2').append(text);
+
+		text = '<div class="day">' + day3 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[2].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[2].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[2].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast3').append(text);
+
+		text = '<div class="day">' + day4 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[3].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[3].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[3].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast4').append(text);
+
+		text = '<div class="day">' + day5 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[4].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[4].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[4].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast5').append(text);
+
+	});
+
+
+
+}, "jsonp");
+
+
+
+$('#go').click(function(){
+
+	$('.fc, #today').empty();
+	$('#name').addClass('remove');
+	var cityName = $('#name').val();
+	$('#name').val('cityName');
+
+
+
+	var todayUrl = 'http://api.openweathermap.org/data/2.5/weather?q='+cityName+'&units=metric&appid=1e65321b7d769c18cc3b525d0b357ed3' ;
+	var forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast/daily?q='+cityName+'&units=metric&appid=1e65321b7d769c18cc3b525d0b357ed3';
+
+
+	$.get( todayUrl, function (today) {
+
+
+		text = today.name +", "+ today.sys.country + '<br/>';
+		text += '<img src="w-svg/' + today.weather[0].icon + '.svg"/><br/>';
+		text += '<div class="max">' + today.main.temp_max + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + today.main.temp_min + ' <sup>o</sup>C</div>';
+		$('#today').append(text);
+
+	});
+
+
+
+	$.get( forecastUrl, function (fc) {
+
+
+		text = '<div class="day">' + day1 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[0].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[0].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[0].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast1').append(text);
+
+		text = '<div class="day">' + day2 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[1].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[1].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[1].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast2').append(text);
+
+		text = '<div class="day">' + day3 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[2].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[2].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[2].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast3').append(text);
+
+		text = '<div class="day">' + day4 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[3].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[3].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[3].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast4').append(text);
+
+		text = '<div class="day">' + day5 +'</div>';
+		text += '<div class="icon">' + '<img src="w-svg/' + fc.list[4].weather[0].icon + '.svg"/></div>';
+		text += '<div class="max">' + Math.round(fc.list[4].temp.max) + ' <sup>o</sup>C</div>';
+		text += '<div class="min">' + Math.round(fc.list[4].temp.min) + ' <sup>o</sup>C</div>';
+		$('#forecast5').append(text);
+
+	});
+
+});
+
+
+
+// --- DAYS ---- OPENWEATHERMAP DOES NOT PROVIDE DATES FOR 5 DAYS DAILY FORECAST
+
+
+		var d = new Date();
+
+		var weekday = new Array(7);
+		weekday[0] = "MON";
+		weekday[1] = "TUE";
+		weekday[2] = "WED";
+		weekday[3] = "THU";
+		weekday[4] = "FRI";
+		weekday[5] = "SAT";
+		weekday[6] = "SUN";
+		weekday[7] = "MON";
+		weekday[8] = "TUE";
+		weekday[9] = "WED";
+		weekday[10] = "THU";
+		weekday[11] = "FRI";
+		weekday[12] = "SAT";
+		weekday[13] = "SUN";
+
+
+		var day1 = weekday[d.getDay()+1];
+		var day2 = weekday[d.getDay()+2];
+		var day3 = weekday[d.getDay()+3];
+		var day4 = weekday[d.getDay()+4];
+		var day5 = weekday[d.getDay()+5];
+
+
+
+
+		//--- AUTOCOMPLETE LIST
+
+		  $( function() {
+		    var cityTags = [
+		      "Athens",
+		      "Thessaloniki",
+		      "Patra",
+		      "Heraklion",
+		      "Grevena",
+		      "Antiparos",
+		      "Naxos",
+		      "Limnos",
+		      "Kos",
+		      "Rhodes",
+		      "Milos",
+		      "Gaudos",
+		      "Astypalaia",
+		      "London",
+		      "New York",
+		      "Tokyo",
+		      "Hong Kong",
+		      "Aleppo",
+		      "Damascus",
+		      "Cairo",
+		      "Los Angeles",
+		      "San Francisco",
+		      "Portland",
+		      "Mount Hood",
+		      "Luton",
+		      "Brighton",
+		      "Paris",
+		      "Rome",
+		      "Oslo",
+		      "Copenhagen",
+		      "Reykjavic",
+		      "Malmo",
+		      "Brussels",
+		      "Tikehau",
+		      "Easter Island"
+		    ];
+		    $( "#name" ).autocomplete({
+		    	source: cityTags
+		    });
+		} );
+
+	</script>
+
+</body>
+
+</html>
